@@ -1,0 +1,28 @@
+{#
+    Copyright (C) 2026 CERN.
+
+    CDS-RDM is free software; you can redistribute it and/or modify it
+    under the terms of the GPL-2.0 License; see LICENSE file for more details.
+
+    Standard InvenioRDM search app (same as /search), pointed at the
+    semantic records endpoint via ``search_app_config``.
+#}
+
+{%- set title = _("Semantic search") %}
+{%- extends config.BASE_TEMPLATE %}
+
+{%- block javascript %}
+  {{ super() }}
+  {{ webpack['invenio-app-rdm-search.js'] }}
+{%- endblock %}
+
+{%- block page_body %}
+<div class="ui container">
+  <div class="ui info message rel-mt-2">
+    <i class="flask icon"></i>
+    {{ _("Semantic search (prototype): results are ranked by meaning, not keywords. Only public records indexed for semantic search are included.") }}
+    <a href="{{ url_for('invenio_search_ui.search', q=request.args.get('q', '')) }}">{{ _("Switch to keyword search") }}</a>
+  </div>
+  <div data-invenio-search-config='{{ search_app_config | tojson }}'></div>
+</div>
+{%- endblock page_body %}

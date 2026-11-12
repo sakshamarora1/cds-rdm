@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2025 CERN.
+# Copyright (C) 2025-2026 CERN.
 #
 # CDS-RDM is free software; you can redistribute it and/or modify it
 # under the terms of the GPL-2.0 License; see LICENSE file for more details.
@@ -88,3 +88,30 @@ CDS_CERN_ARCHIVES_BASE_URL = "https://archives.cern.ch/index.php/"
 
 Not the final URL — ``archive_link_render`` appends the archive id.
 """
+
+# Semantic search (prototype)
+# ===========================
+CDS_SEMANTIC_SEARCH_ENABLED = True
+"""Enable the ``/semantic-search`` page and ``/api/semantic-search`` endpoint."""
+
+CDS_SEMANTIC_SEARCH_INDEX = "cds-rdm-rdmrecords-semantic"
+"""Full name of the OpenSearch index holding the chunk embeddings."""
+
+CDS_SEMANTIC_SEARCH_MODEL_ID = None
+"""ML Commons model id used to embed the query (must match the ingest model).
+
+Changes whenever the model is re-registered; set it in ``invenio.cfg`` or via
+``INVENIO_CDS_SEMANTIC_SEARCH_MODEL_ID``.
+"""
+
+CDS_SEMANTIC_SEARCH_FIELD = "semantic_chunks_embedding.knn"
+"""knn_vector field; if dotted, the parent path is queried as ``nested``."""
+
+CDS_SEMANTIC_SEARCH_K = 200
+"""Nearest neighbours (chunks, not records) retrieved per query."""
+
+CDS_SEMANTIC_SEARCH_CANDIDATES = 100
+"""Records the search page ranks, filters by facets and paginates over."""
+
+CDS_SEMANTIC_SEARCH_MAX_SIZE = 50
+"""Maximum ``size`` accepted by the endpoint."""
