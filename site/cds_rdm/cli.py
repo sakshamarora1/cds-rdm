@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2025 CERN.
+# Copyright (C) 2025-2026 CERN.
 #
 # CDS-RDM is free software; you can redistribute it and/or modify it
 # under the terms of the GPL-2.0 License; see LICENSE file for more details.
@@ -206,11 +206,11 @@ def delete_record(recid):
         rdm_draft,
     ) = _get_record(recid)
     # Parent
-    (parent_model, parent_id, parent_pid, parent_communities, requests) = _get_parent(
+    parent_model, parent_id, parent_pid, parent_communities, requests = _get_parent(
         record_model
     )
     # Version
-    (record_version, latest_record_version_id, all_versions) = _get_version(
+    record_version, latest_record_version_id, all_versions = _get_version(
         recid, parent_id
     )
 
@@ -248,3 +248,25 @@ def delete_record(recid):
 
     for req in requests:
         current_requests_service.indexer.delete(req)
+
+
+@cds_admin.group("search-phrases")
+def search_phrases():
+    """Phrase index behind the search suggestions."""
+
+
+@search_phrases.command("build")
+@click.option("--dry-run", is_flag=True, help="Count the phrases, write nothing.")
+@with_appcontext
+def build_search_phrases(dry_run):
+    """Rebuild the phrase index from the vocabularies and public communities.
+
+    Writes a new index and moves the alias to it, so searches keep working
+    during the build. Run it again when the vocabularies or communities change.
+    Usage: invenio cds-admin search-phrases build [--dry-run]
+    """
+    from .search.views import build_phrases_index
+
+    name, count = build_phrases_index(dry_run=dry_run)
+    verb = "Would index" if dry_run else "Indexed"
+    click.secho(f"{verb} {count} phrases into {name}.", fg="green")
